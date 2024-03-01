@@ -8,7 +8,7 @@ Puedes ver una demostración del proyecto [aquí](https://pokedex-redux-orpin.ve
 
 ## Capturas de pantalla
 
-![Pokedex](https://i.imgur.com/xY1hkvr.png)
+![Pokedex](https://i.imgur.com/T29KXTL.png)
 
 ## Características
 
