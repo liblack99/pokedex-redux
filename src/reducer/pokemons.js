@@ -6,6 +6,7 @@ import {
   SET_SEARCH,
   SET_TYPES,
   SET_FILTER,
+  ALL,
 } from "../actions/types";
 
 const initialState = {
@@ -15,9 +16,10 @@ const initialState = {
   search: "",
   originalPokemons: [],
   types: [],
-  limit: 10,
-  totalPokemon: 150,
-  filterTypes: "all",
+  offset: 0,
+  limit: 20,
+  totalPokemon: 151,
+  filterTypes: ALL,
 };
 
 export const pokemonReducer = (state = initialState, action) => {
@@ -26,7 +28,7 @@ export const pokemonReducer = (state = initialState, action) => {
       return {
         ...state,
         pokemons: [...state.pokemons, ...action.payload],
-        originalPokemons: action.payload,
+        originalPokemons: [...state.pokemons, ...action.payload],
         offset: state.offset + state.limit,
       };
     case SET_LOADING:

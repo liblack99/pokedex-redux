@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { getPokemonsWithDetails } from "../actions";
+import { getPokemonWithType, getPokemonsWithDetails } from "../actions";
 
 function usePokemonData() {
   const pokemons = useSelector((state) => state.pokemons, shallowEqual);
@@ -8,10 +8,13 @@ function usePokemonData() {
   const limit = useSelector((state) => state.limit, shallowEqual);
   const offset = useSelector((state) => state.offset, shallowEqual);
   const totalPokemon = useSelector((state) => state.totalPokemon, shallowEqual);
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getPokemonsWithDetails(limit, offset));
+    if (pokemons.length === 0) {
+      dispatch(getPokemonsWithDetails(limit, offset));
+      dispatch(getPokemonWithType());
+    }
   }, []);
 
   return { pokemons, loading, limit, offset, totalPokemon, dispatch };
