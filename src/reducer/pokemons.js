@@ -7,6 +7,8 @@ import {
   SET_TYPES,
   SET_FILTER,
   ALL,
+  SET_CURRENT_POKEMON,
+  SET_OPEN,
 } from "../actions/types";
 
 const initialState = {
@@ -20,6 +22,8 @@ const initialState = {
   limit: 20,
   totalPokemon: 151,
   filterTypes: ALL,
+  currentPokemon: {},
+  open: false,
 };
 
 export const pokemonReducer = (state = initialState, action) => {
@@ -64,11 +68,18 @@ export const pokemonReducer = (state = initialState, action) => {
     case SET_FILTER: {
       const { originalPokemons } = state;
       const value = action.payload.trim().toLowerCase();
+      const { favorites } = state;
       if (value === "all") {
         return {
           ...state,
-          search: value,
+          filterTypes: value,
           pokemons: originalPokemons,
+        };
+      } else if (value === "favorites") {
+        return {
+          ...state,
+          filterTypes: value,
+          pokemons: favorites,
         };
       }
       const filteredPokemonsTypes = originalPokemons.filter((pokemon) => {
@@ -81,6 +92,16 @@ export const pokemonReducer = (state = initialState, action) => {
         pokemons: filteredPokemonsTypes,
       };
     }
+    case SET_CURRENT_POKEMON:
+      return {
+        ...state,
+        currentPokemon: action.payload,
+      };
+    case SET_OPEN:
+      return {
+        ...state,
+        open: action.payload,
+      };
     default:
       return state;
   }

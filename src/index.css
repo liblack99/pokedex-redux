@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.hover-class {
+  cursor: pointer;
+}
+
+.chill-i {
+  opacity: 0;
+}
+.hover-class:hover > .chill-i {
+  opacity: 1;
+}

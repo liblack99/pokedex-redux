@@ -8,6 +8,11 @@ function usePokemonData() {
   const limit = useSelector((state) => state.limit, shallowEqual);
   const offset = useSelector((state) => state.offset, shallowEqual);
   const totalPokemon = useSelector((state) => state.totalPokemon, shallowEqual);
+  const open = useSelector((state) => state.open, shallowEqual);
+  const currentPokemon = useSelector(
+    (state) => state.currentPokemon,
+    shallowEqual
+  );
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -17,7 +22,16 @@ function usePokemonData() {
     }
   }, []);
 
-  return { pokemons, loading, limit, offset, totalPokemon, dispatch };
+  return {
+    pokemons,
+    loading,
+    limit,
+    offset,
+    totalPokemon,
+    currentPokemon,
+    open,
+    dispatch,
+  };
 }
 
 export default usePokemonData;

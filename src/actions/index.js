@@ -6,6 +6,8 @@ import {
   SET_SEARCH,
   SET_TYPES,
   SET_FILTER,
+  SET_CURRENT_POKEMON,
+  SET_OPEN,
 } from "./types";
 import { getPokemonDetails, getTypes } from "../services";
 import { getPokemon } from "../services";
@@ -64,6 +66,18 @@ export const setTypes = (payload) => {
 export const setFilter = (payload) => {
   return {
     type: SET_FILTER,
+    payload,
+  };
+};
+export const setCurrentPokemon = (payload) => {
+  return {
+    type: SET_CURRENT_POKEMON,
+    payload,
+  };
+};
+export const setOpen = (payload) => {
+  return {
+    type: SET_OPEN,
     payload,
   };
 };

@@ -7,10 +7,21 @@ import SelectTypes from "./Components/SelectTypes";
 import usePokemonData from "./hooks/usePokemonData";
 import { useEffect } from "react";
 import { getPokemonsWithDetails } from "./actions";
+import Modal from "./Components/Modal";
+import DetailsCard from "./Components/DetailsCard";
 
 function App() {
-  const { pokemons, loading, totalPokemon, dispatch, limit, offset } =
-    usePokemonData();
+  const {
+    pokemons,
+    loading,
+    totalPokemon,
+    dispatch,
+    limit,
+    offset,
+    currentPokemon,
+    open,
+  } = usePokemonData();
+  console.log(currentPokemon);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,6 +55,11 @@ function App() {
           </div>
         )}
         {<PokemonSection pokemons={pokemons} />}
+        {open && (
+          <Modal>
+            <DetailsCard pokemon={currentPokemon} />
+          </Modal>
+        )}
       </Layout>
     </>
   );

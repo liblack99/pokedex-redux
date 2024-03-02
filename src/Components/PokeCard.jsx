@@ -2,11 +2,20 @@ import React, { useState, useRef, useEffect } from "react";
 import AddFavoriteBtn from "./AddFavoriteBtn";
 import typeColors from "../colorTypes/colorTypes";
 import { getPokemonTypes } from "../utils/utils";
+import Types from "./Types";
+import { useDispatch } from "react-redux";
+import { setCurrentPokemon, setOpen } from "../actions";
 
 export default function PokeCard({ pokemon }) {
   const types = getPokemonTypes(pokemon);
   const [isVisible, setIsVisible] = useState(false);
   const imageRef = useRef();
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    dispatch(setCurrentPokemon(pokemon));
+    dispatch(setOpen(true));
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -26,9 +35,13 @@ export default function PokeCard({ pokemon }) {
   }, []);
 
   return (
-    <article className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col max-w-sm object-contain relative">
+    <article
+      className="flex rounded-lg  bg-white shadow-md flex-col max-w-sm object-contain relative"
+      style={{ border: `${typeColors[types[0].name].background} 1px solid` }}>
       <AddFavoriteBtn pokemon={pokemon} />
-      <div className="flex h-full flex-col justify-center  gap-4 p-6">
+      <div
+        className="flex h-full flex-col justify-center  gap-4 p-6"
+        onClick={handleClick}>
         <img
           alt={pokemon.name}
           src={
@@ -40,20 +53,20 @@ export default function PokeCard({ pokemon }) {
           className="rounded-t-lg"
           loading="lazy"
         />
-        <h3 className="text-2xl text-center font-bold tracking-tight text-gray-900 dark:text-white">
-          {pokemon.name}
+        <h3
+          className="text-2xl text-center font-bold tracking-tight"
+          style={{
+            color: `${typeColors[types[0].name].background}`,
+          }}>
+          {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
         </h3>
         <div className="flex gap-4 justify-center items-center">
           {types.map((type) => (
-            <span
+            <Types
               key={type.name}
-              className="p-1 text-md rounded px-2 py-0.5 flex items-center"
-              style={{
-                backgroundColor: typeColors[type.name].background,
-                color: typeColors[type.name].color,
-              }}>
-              {type.name}
-            </span>
+              name={type.name}
+              types={typeColors[type.name].img}
+            />
           ))}
         </div>
       </div>
