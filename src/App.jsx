@@ -6,32 +6,31 @@ import { Spinner } from "flowbite-react";
 import SelectTypes from "./Components/SelectTypes";
 import usePokemonData from "./hooks/usePokemonData";
 import { useEffect } from "react";
-import { getPokemonsWithDetails } from "./actions";
 import Modal from "./Components/Modal";
 import DetailsCard from "./Components/DetailsCard";
+import { fetchPokemons } from "./slices/pokemonSlice";
 
 function App() {
   const {
-    pokemons,
+    pokemonList,
     loading,
-    totalPokemon,
-    dispatch,
     limit,
     offset,
+    totalPokemonCount,
     currentPokemon,
-    open,
+    isModalOpen,
+    dispatch,
   } = usePokemonData();
-  console.log(currentPokemon);
 
   useEffect(() => {
     const handleScroll = () => {
       if (
         window.innerHeight + document.documentElement.scrollTop ===
           document.documentElement.offsetHeight &&
-        pokemons.length < totalPokemon &&
-        pokemons.length >= 10
+        pokemonList.length < totalPokemonCount &&
+        pokemonList.length >= 20
       ) {
-        dispatch(getPokemonsWithDetails(limit, offset));
+        dispatch(fetchPokemons({ limit, offset }));
       }
     };
 
@@ -40,12 +39,12 @@ function App() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [pokemons]);
+  }, [pokemonList]);
   return (
     <>
       <Layout>
-        <h1 className="text-4xl text-blue-400 mt-10">pokedex</h1>
-        <div className="w-[90%] flex justify-around items-center">
+        <h1 className="text-4xl text-blue-400 mt-10  mb-10">pokedex</h1>
+        <div className="w-[90%] flex justify-around items-center flex-wrap">
           <Search />
           <SelectTypes />
         </div>
@@ -54,8 +53,8 @@ function App() {
             <Spinner size="xl" />
           </div>
         )}
-        {<PokemonSection pokemons={pokemons} />}
-        {open && (
+        <PokemonSection pokemonList={pokemonList} />
+        {isModalOpen && (
           <Modal>
             <DetailsCard pokemon={currentPokemon} />
           </Modal>

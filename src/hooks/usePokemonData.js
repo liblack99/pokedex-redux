@@ -1,35 +1,49 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { getPokemonWithType, getPokemonsWithDetails } from "../actions";
+import {
+  fetchPokemons,
+  fetchPokemonWithType,
+  fetchPokemonName,
+} from "../slices/pokemonSlice";
 
 function usePokemonData() {
-  const pokemons = useSelector((state) => state.pokemons, shallowEqual);
+  const pokemonList = useSelector((state) => state.pokemonList, shallowEqual);
   const loading = useSelector((state) => state.loading, shallowEqual);
   const limit = useSelector((state) => state.limit, shallowEqual);
   const offset = useSelector((state) => state.offset, shallowEqual);
-  const totalPokemon = useSelector((state) => state.totalPokemon, shallowEqual);
-  const open = useSelector((state) => state.open, shallowEqual);
+  const query = useSelector((state) => state.searchQuery, shallowEqual);
+  const totalPokemonCount = useSelector(
+    (state) => state.totalPokemonCount,
+    shallowEqual
+  );
+  const isModalOpen = useSelector((state) => state.isModalOpen, shallowEqual);
+
   const currentPokemon = useSelector(
     (state) => state.currentPokemon,
     shallowEqual
   );
-
   const dispatch = useDispatch();
+
   useEffect(() => {
-    if (pokemons.length === 0) {
-      dispatch(getPokemonsWithDetails(limit, offset));
-      dispatch(getPokemonWithType());
+    if (pokemonList.length === 0) {
+      dispatch(fetchPokemons({ limit, offset }));
+      dispatch(fetchPokemonWithType());
     }
   }, []);
+  useEffect(() => {
+    if (pokemonList.length > 24) {
+      dispatch(fetchPokemonName({ totalPokemonCount, offset }));
+    }
+  }, [pokemonList.length > 24]);
 
   return {
-    pokemons,
+    pokemonList,
     loading,
     limit,
     offset,
-    totalPokemon,
+    totalPokemonCount,
     currentPokemon,
-    open,
+    isModalOpen,
     dispatch,
   };
 }

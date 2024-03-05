@@ -1,15 +1,14 @@
 import React from "react";
 import { useSelector, shallowEqual, useDispatch } from "react-redux";
-import { setFilter } from "../actions";
-import { memo } from "react";
-import { ALL, FAVORITES } from "../actions/types";
+import { setFilterType } from "../slices/pokemonSlice";
+import { ALL, FAVORITES } from "../const";
 
 const SelectTypes = () => {
-  const types = useSelector((state) => state.types, shallowEqual);
+  const typesList = useSelector((state) => state.typesList, shallowEqual);
   const dispatch = useDispatch();
 
   const handleChange = (event) => {
-    dispatch(setFilter(event.target.value));
+    dispatch(setFilterType(event.target.value));
   };
 
   return (
@@ -21,7 +20,7 @@ const SelectTypes = () => {
         onChange={handleChange}>
         <option value={ALL}>All</option>
         <option value={FAVORITES}>Favorites</option>
-        {types.map((type) => (
+        {typesList.map((type) => (
           <option key={type.name} value={type.name}>
             {type.name}
           </option>

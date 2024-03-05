@@ -4,7 +4,7 @@ import typeColors from "../colorTypes/colorTypes";
 import { getPokemonTypes } from "../utils/utils";
 import Types from "./Types";
 import { useDispatch } from "react-redux";
-import { setCurrentPokemon, setOpen } from "../actions";
+import { setCurrentPokemon, setIsModalOpen } from "../slices/pokemonSlice";
 
 export default function PokeCard({ pokemon }) {
   const types = getPokemonTypes(pokemon);
@@ -14,7 +14,7 @@ export default function PokeCard({ pokemon }) {
 
   const handleClick = () => {
     dispatch(setCurrentPokemon(pokemon));
-    dispatch(setOpen(true));
+    dispatch(setIsModalOpen(true));
   };
 
   useEffect(() => {
@@ -36,23 +36,25 @@ export default function PokeCard({ pokemon }) {
 
   return (
     <article
-      className="flex rounded-lg  bg-white shadow-md flex-col max-w-sm object-contain relative"
+      className="flex rounded-lg  bg-white shadow-md flex-col max-w-sm object-contain relative zoomIn min-h-[290px] "
       style={{ border: `${typeColors[types[0].name].background} 1px solid` }}>
       <AddFavoriteBtn pokemon={pokemon} />
       <div
-        className="flex h-full flex-col justify-center  gap-4 p-6"
+        className="flex h-full flex-col justify-center items-center  gap-4 p-6"
         onClick={handleClick}>
-        <img
-          alt={pokemon.name}
-          src={
-            isVisible
-              ? pokemon?.sprites.other["official-artwork"].front_default
-              : ""
-          }
-          ref={imageRef}
-          className="rounded-t-lg"
-          loading="lazy"
-        />
+        <div className="min-w-[216px] min-h-[216px]">
+          <img
+            alt={pokemon.name}
+            src={
+              isVisible
+                ? pokemon?.sprites.other["official-artwork"].front_default
+                : ""
+            }
+            ref={imageRef}
+            className="rounded-t-lg"
+          />
+        </div>
+
         <h3
           className="text-2xl text-center font-bold tracking-tight"
           style={{

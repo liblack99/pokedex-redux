@@ -2,14 +2,14 @@ import React from "react";
 import Types from "./Types";
 import typeColors from "../colorTypes/colorTypes";
 import { useDispatch } from "react-redux";
-import { setOpen } from "../actions";
+import { setIsModalOpen } from "../slices/pokemonSlice";
 
 function DetailsCard({ pokemon }) {
   const types = pokemon?.types.map((type) => type.type);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    dispatch(setOpen(false));
+    dispatch(setIsModalOpen(false));
   };
 
   const getPercentStatBar = (stat_base) => {
@@ -18,7 +18,7 @@ function DetailsCard({ pokemon }) {
   };
   return (
     <article
-      className="bg-white w-[440px]  rounded-lg border-4 flex flex-col relative"
+      className="bg-white w-[440px]  rounded-lg border-4 flex flex-col relative zoomIn "
       style={{ border: `${typeColors[types[0].name].background} 1px solid` }}>
       <span
         className="absolute text-white text-4xl font-bold -right-9 -top-6 cursor-pointer "

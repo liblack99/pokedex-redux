@@ -1,11 +1,16 @@
-import { FloatingLabel } from "flowbite-react";
-import { useDispatch } from "react-redux";
-import { setSearch } from "../actions";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { fetchPokemonName, setSearchQuery } from "../slices/pokemonSlice";
+
 function Search() {
+  const totalPokemon = useSelector(
+    (state) => (state.totalPokemonCount, shallowEqual)
+  );
+  const offset = useSelector((state) => (state.offset, shallowEqual));
   const dispatch = useDispatch();
 
   const handelChange = (event) => {
-    dispatch(setSearch(event.target.value));
+    const query = event.target.value.trim().toLowerCase();
+    dispatch(setSearchQuery(query));
   };
 
   return (
