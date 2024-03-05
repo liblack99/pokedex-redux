@@ -21,7 +21,7 @@ function App() {
     currentPokemon,
     open,
   } = usePokemonData();
-  console.log(currentPokemon);
+ 
 
   useEffect(() => {
     const handleScroll = () => {
