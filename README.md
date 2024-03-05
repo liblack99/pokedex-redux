@@ -37,6 +37,7 @@ Puedes ver una demostración del proyecto [aquí](https://pokedex-redux-orpin.ve
 
 - Busca Pokémon utilizando el cuadro de búsqueda.
 - ¡Explora la Pokedex y descubre todos los Pokémon!
+- Click en los pokemones para mas detalles.
 
 ## Contribución
 
