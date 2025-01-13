@@ -8,7 +8,7 @@ Puedes ver una demostración del proyecto [aquí](https://pokedex-redux-orpin.ve
 
 ## Capturas de pantalla
 
-![Pokedex](https://i.imgur.com/T29KXTL.png)
+![Pokedex](https://firebasestorage.googleapis.com/v0/b/pelagic-earth-407809.appspot.com/o/proyectos%2Fpokedex.webp?alt=media&token=a535ff5e-a910-458f-8bde-2b56c767fd1e)
 
 ## Características
 
