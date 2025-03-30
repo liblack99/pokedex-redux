@@ -1,4 +1,4 @@
-import {createSlice, createAsyncThunk, current} from "@reduxjs/toolkit";
+import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
 import {getPokemonDetails, getPokemon, getTypes} from "../services";
 
 const initialState = {
