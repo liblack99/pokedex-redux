@@ -1,16 +1,13 @@
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
-import { fetchPokemonName, setSearchQuery } from "../slices/pokemonSlice";
+import {useDispatch} from "react-redux";
+import {setFilterPokemonName} from "../slices/pokemonSlice";
 
 function Search() {
-  const totalPokemon = useSelector(
-    (state) => (state.totalPokemonCount, shallowEqual)
-  );
-  const offset = useSelector((state) => (state.offset, shallowEqual));
   const dispatch = useDispatch();
 
   const handelChange = (event) => {
     const query = event.target.value.trim().toLowerCase();
-    dispatch(setSearchQuery(query));
+    console.log(query);
+    dispatch(setFilterPokemonName(query));
   };
 
   return (

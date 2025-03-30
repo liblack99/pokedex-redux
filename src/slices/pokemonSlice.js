@@ -1,56 +1,30 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getPokemonDetails, getPokemon, getTypes } from "../services";
+import {createSlice, createAsyncThunk, current} from "@reduxjs/toolkit";
+import {getPokemonDetails, getPokemon, getTypes} from "../services";
 
 const initialState = {
   pokemonList: [],
-  loading: true,
-  favoritePokemons: [],
+  filteredPokemonList: [],
+  loading: false,
   searchList: [],
-  searchQuery: "",
-  originalPokemonList: [],
-  typesList: [],
   offset: 0,
   limit: 25,
-  totalPokemonCount: 151,
-  filterType: "ALL",
-  currentPokemon: {},
-  isModalOpen: false,
+  typesList: [],
+  pokemonFavorites: [],
+  currentPokemon: null,
 };
 
 export const fetchPokemons = createAsyncThunk(
   "pokemon/fetchPokemons",
-  async ({ limit, offset }, thunkAPI) => {
-    thunkAPI.dispatch(setLoading(true));
+  async ({limit, offset}, thunkAPI) => {
     try {
       const response = await getPokemon(limit, offset);
       const pokemons = response.results;
       const pokemonsDetailed = await Promise.all(
-        pokemons.map((pokemon) => {
-          return getPokemonDetails(pokemon);
-        })
+        pokemons.map((pokemon) => getPokemonDetails(pokemon))
       );
-      thunkAPI.dispatch(setPokemonList(pokemonsDetailed));
-      thunkAPI.dispatch(setLoading(false));
+      return pokemonsDetailed;
     } catch (error) {
-      return thunkAPI.rejectWithValue({ error: error.message });
-    }
-  }
-);
-
-export const fetchPokemonName = createAsyncThunk(
-  "pokemon/fetchPokemons",
-  async ({ totalPokemonCount, offset }, thunkAPI) => {
-    try {
-      const response = await getPokemon(totalPokemonCount, offset);
-      const pokemons = response.results;
-      const pokemonsName = await Promise.all(
-        pokemons.map((pokemon) => {
-          return getPokemonDetails(pokemon);
-        })
-      );
-      thunkAPI.dispatch(setSearchList(pokemonsName));
-    } catch (error) {
-      return thunkAPI.rejectWithValue({ error: error.message });
+      return thunkAPI.rejectWithValue({error: error.message});
     }
   }
 );
@@ -60,9 +34,25 @@ export const fetchPokemonWithType = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const types = await getTypes();
-      thunkAPI.dispatch(setTypesList(types));
+      return types;
     } catch (error) {
-      return thunkAPI.rejectWithValue({ error: error.message });
+      return thunkAPI.rejectWithValue({error: error.message});
+    }
+  }
+);
+
+export const fetchTotalPokemon = createAsyncThunk(
+  "pokemon/fetchtotalPockemon",
+  async (_, thunkAPI) => {
+    try {
+      const response = await getPokemon(151, 0);
+      const pokemons = response.results;
+      const pokemonsDetailed = await Promise.all(
+        pokemons.map((pokemon) => getPokemonDetails(pokemon))
+      );
+      return pokemonsDetailed;
+    } catch (error) {
+      return thunkAPI.rejectWithValue({error: error.message});
     }
   }
 );
@@ -71,77 +61,88 @@ const pokemonSlice = createSlice({
   name: "pokemon",
   initialState,
   reducers: {
-    setLoading: (state, action) => {
-      state.loading = action.payload;
+    setFilterPokemonName: (state, action) => {
+      const pokemonName = action.payload.toLowerCase();
+      if (pokemonName !== "") {
+        state.pokemonList = state.filteredPokemonList.filter((pokemon) =>
+          pokemon.name.toLowerCase().includes(pokemonName)
+        );
+      } else {
+        state.pokemonList = state.filteredPokemonList;
+      }
     },
-    setPokemonList: (state, action) => {
-      state.pokemonList = [...state.pokemonList, ...action.payload];
-      state.originalPokemonList = state.pokemonList;
-      state.offset = state.offset + state.limit;
+    setFilterPokemonType: (state, action) => {
+      const selectedType = action.payload;
+
+      if (selectedType === "FAVORITES") {
+        state.pokemonList = state.pokemonFavorites;
+      } else if (selectedType !== "ALL") {
+        state.pokemonList = state.filteredPokemonList.filter((pokemon) =>
+          pokemon.types?.some((type) => type.type.name === selectedType)
+        );
+      } else {
+        state.pokemonList = state.filteredPokemonList;
+      }
     },
-    setFavoritePokemons: (state, action) => {
-      state.favoritePokemons.push(action.payload);
+    addFavoritePokemons: (state, action) => {
+      const pokemon = action.payload;
+      if (!state.pokemonFavorites.some((fav) => fav.id === pokemon.id)) {
+        state.pokemonFavorites.push(pokemon);
+      }
     },
     removeFavoritePokemons: (state, action) => {
-      state.favoritePokemons = state.favoritePokemons.filter(
-        (pokemon) => pokemon.id !== action.payload
+      const pokemonId = action.payload;
+      state.pokemonFavorites = state.pokemonFavorites.filter(
+        (pokemon) => pokemon.id !== pokemonId
       );
-    },
-    setSearchQuery: (state, action) => {
-      const value = action.payload;
-      const filterName = state.searchList.filter((pokemon) =>
-        pokemon.name.includes(value)
-      );
-      if (value === "") {
-        state.searchQuery = value;
-        state.pokemonList = state.originalPokemonList;
-      } else {
-        state.pokemonList = filterName;
-      }
-    },
-    setSearchList: (state, action) => {
-      state.searchList = action.payload;
-    },
-    setTypesList: (state, action) => {
-      state.typesList = action.payload;
-    },
-
-    setFilterType: (state, action) => {
-      const value = action.payload.trim().toLowerCase();
-      const { originalPokemonList, favoritePokemons, searchList } = state;
-      if (value === "all") {
-        state.filterType = value;
-        state.pokemonList = originalPokemonList;
-      } else if (value === "favorites") {
-        state.filterType = value;
-        state.pokemonList = favoritePokemons;
-      } else {
-        const filteredPokemonsTypes = searchList.filter((pokemon) =>
-          pokemon.types.some((type) => type.type.name === value)
-        );
-        state.filterType = value;
-        state.pokemonList = filteredPokemonsTypes;
-      }
     },
     setCurrentPokemon: (state, action) => {
-      state.currentPokemon = action.payload;
+      const pokemonId = action.payload;
+      const currentPokemon = state.pokemonList.find(
+        (pokemon) => pokemon.id === pokemonId
+      );
+      state.currentPokemon = currentPokemon;
     },
-    setIsModalOpen: (state, action) => {
-      state.isModalOpen = action.payload;
+    removeCurrentPokemon: (state) => {
+      state.currentPokemon = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchPokemons.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchPokemons.fulfilled, (state, action) => {
+        state.pokemonList = [...state.pokemonList, ...action.payload];
+        state.originalPokemonList = state.pokemonList;
+        state.offset += state.limit;
+        state.loading = false;
+      })
+      .addCase(fetchPokemons.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchPokemonWithType.fulfilled, (state, action) => {
+        state.typesList = action.payload;
+      })
+      .addCase(fetchPokemonWithType.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchTotalPokemon.fulfilled, (state, action) => {
+        state.filteredPokemonList = action.payload;
+      })
+      .addCase(fetchTotalPokemon.rejected, (state) => {
+        state.loading = false;
+      });
   },
 });
 
-export const {
-  setLoading,
-  setPokemonList,
-  setFavoritePokemons,
-  removeFavoritePokemons,
-  setSearchQuery,
-  setTypesList,
-  setFilterType,
-  setCurrentPokemon,
-  setIsModalOpen,
-  setSearchList,
-} = pokemonSlice.actions;
 export default pokemonSlice.reducer;
+
+export const {
+  setFilterPokemonName,
+  setFilterPokemonType,
+  removeFavoritePokemons,
+  addFavoritePokemons,
+  setCurrentPokemon,
+  removeCurrentPokemon,
+} = pokemonSlice.actions;

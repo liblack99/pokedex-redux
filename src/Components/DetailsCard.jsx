@@ -1,15 +1,15 @@
 import React from "react";
 import Types from "./Types";
 import typeColors from "../colorTypes/colorTypes";
-import { useDispatch } from "react-redux";
-import { setIsModalOpen } from "../slices/pokemonSlice";
+import {useDispatch} from "react-redux";
+import {removeCurrentPokemon} from "../slices/pokemonSlice";
 
-function DetailsCard({ pokemon }) {
+function DetailsCard({pokemon}) {
   const types = pokemon?.types.map((type) => type.type);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    dispatch(setIsModalOpen(false));
+    dispatch(removeCurrentPokemon());
   };
 
   const getPercentStatBar = (stat_base) => {
@@ -19,15 +19,15 @@ function DetailsCard({ pokemon }) {
   return (
     <article
       className="bg-white w-[440px]  rounded-lg border-4 flex flex-col relative zoomIn "
-      style={{ border: `${typeColors[types[0].name].background} 1px solid` }}>
+      style={{border: `${typeColors[types[0].name].background} 1px solid`}}>
       <span
-        className="absolute text-white text-4xl font-bold -right-9 -top-6 cursor-pointer "
+        className="absolute text-black font-bold right-0 top-0 cursor-pointer "
         onClick={handleClick}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="icon icon-tabler icon-tabler-x"
-          width={40}
-          height={40}
+          width={32}
+          height={32}
           viewBox="0 0 24 24"
           strokeWidth={2}
           stroke="currentColor"
@@ -41,7 +41,7 @@ function DetailsCard({ pokemon }) {
       </span>
       <div
         className="flex justify-between items-center bg-green-400 "
-        style={{ background: typeColors[types[0].name].background }}>
+        style={{background: typeColors[types[0].name].background}}>
         <h2 className="text-3xl font-bold pl-2">{pokemon.name}</h2>
       </div>
       <div className=" flex flex-col justify-center items-center bg-white rounded-lg relative">
@@ -78,7 +78,7 @@ function DetailsCard({ pokemon }) {
             <span
               className=" w-[100px] rounded-md flex justify-center items-center font-semibold"
               key={index}
-              style={{ background: typeColors[types[0].name].background }}>
+              style={{background: typeColors[types[0].name].background}}>
               {ability.ability.name}
             </span>
           ))}
@@ -96,14 +96,14 @@ function DetailsCard({ pokemon }) {
             </div>
             <div className="h-4 border rounded-md">
               <div
-                style={{ width: getPercentStatBar(stat.base_stat) }}
+                style={{width: getPercentStatBar(stat.base_stat)}}
                 className="h-full bg-gradient-to-r from-yellow-300 to-yellow-500 flex "></div>
             </div>
           </div>
         ))}
         <div
           className="flex w-full mt-4 h-[auto] justify-end items-center gap-2 pr-2 "
-          style={{ background: typeColors[types[0].name].background }}>
+          style={{background: typeColors[types[0].name].background}}>
           <div className="flex  justify-center items-center">
             <h5 className="font-bold text-md">Weight:</h5>
             <span className="font-bold text-lg">{pokemon?.weight}</span>

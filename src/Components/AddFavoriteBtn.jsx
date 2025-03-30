@@ -1,19 +1,20 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { favorite } from "../icons/favorite";
-import { Nofavorite } from "../icons/noFavorite";
+import {useDispatch, useSelector} from "react-redux";
+import {favorite} from "../icons/favorite";
+import {Nofavorite} from "../icons/noFavorite";
 import {
-  setFavoritePokemons,
+  addFavoritePokemons,
   removeFavoritePokemons,
-} from "../slices/pokemonSlice";
+} from "../slices/pokemonSlice"; // Cambiado a `pokemonSlice`
 
-function AddFavoriteBtn({ pokemon }) {
-  const favorites = useSelector((state) => state.favoritePokemons);
+function AddFavoriteBtn({pokemon}) {
+  const favorites = useSelector((state) => state.pokemonFavorites);
   const isFavorite = favorites.some((fav) => fav.id === pokemon.id);
+
   const dispatch = useDispatch();
   const HandleAddFavorites = () => {
     if (!isFavorite) {
-      dispatch(setFavoritePokemons(pokemon));
+      dispatch(addFavoritePokemons(pokemon));
     }
   };
 
